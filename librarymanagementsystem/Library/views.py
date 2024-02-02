@@ -12,6 +12,24 @@ from .models import Student,Book,BookDetail,BorrowedBook
 from django.utils import timezone
 
 
+@api_view(["GET"])
+def list_api(request):
+    endpoints=[
+    "admin",
+    "api/login",
+    "api/list_student ",
+    "api/add_student" ,
+    "api/get_student/<int:pk> ",
+    "api/add_book" ,
+    "api/get_book/<int:pk> ",
+    "api/list_book",
+    "api/update_book/<int:pk> ",
+    "api/update_book_details/<int:pk>",
+    "api/borrow_book ",
+    "api/list_borrowed_book",
+    "api/return_book ",
+    ]
+    return Response({"available endpoints":endpoints})
 
 @api_view(['POST'])
 @parser_classes([FormParser,MultiPartParser,JSONParser])

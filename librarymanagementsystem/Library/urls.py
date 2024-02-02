@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import login_user,add_student,get_student_id,list_students,add_book,get_book,list_books,update_book,borrow_book,list_borrow_book,return_book,update_book_details
+from .views import login_user,add_student,get_student_id,list_students,add_book,get_book,list_books,update_book,borrow_book,list_borrow_book,return_book,update_book_details,list_api
 
 
 urlpatterns=[
+    path('',list_api),
     path('api/login',login_user,name='login'),
     path('api/list_student',list_students,name='liststudent'),
     path("api/add_student",add_student,name="addstudent"),
