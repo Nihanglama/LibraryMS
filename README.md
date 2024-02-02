@@ -43,4 +43,19 @@ API documentation
 
 Note: use Token "your token "  in Authorization header while sending request to above endpoints since only admin user can perform all the above task. But json input and form inputs are supported for post,put requests
 
+Default dbsqlite is used for this project you can use database of your choice by editing the DATABASES variable in settings.py and download necessary package
 
+example:
+To use postgresql:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'databasename',
+        'USER': 'username',
+        'PASSWORD': 'password',
+        'HOST': 'host_name',
+        'PORT': 'port',
+    }
+}
+- pip install psycopg2 (PostgreSQL adapter for Python)
