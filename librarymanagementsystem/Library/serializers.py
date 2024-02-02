@@ -26,20 +26,20 @@ class BookDetailSerializer(serializers.ModelSerializer):
     DetailsID=serializers.IntegerField(read_only=True)
     class Meta:
         model=BookDetail
-        fields="__all__"
+        fields = ['DetailsID', 'NumberOfPages', 'Publisher', 'Language']
 
 class GetBookSerializer(serializers.ModelSerializer):
-    book_details=BookDetailSerializer()
+    book_details=BookDetailSerializer(many=True,read_only=True)
     class Meta:
         model=Book
-        fields=['BookID', 'Title', 'ISBN', 'PublishedDate', 'Genre', 'book_detail']
+        fields=['BookID', 'Title', 'ISBN', 'PublishedDate', 'Genre','book_details']
 
 
 
 class GetBorrowedBookSerializer(serializers.ModelSerializer):
     class Meta:
         model=BorrowedBook
-        fields=['UserID__Name','BookID__Title','BorrowDate','ReturnDate']
+        fields=['UserID','BookID','BorrowDate','ReturnDate']
 
 class BorrowedBookSerializer(serializers.ModelSerializer):
     UserID=serializers.IntegerField(read_only=True)

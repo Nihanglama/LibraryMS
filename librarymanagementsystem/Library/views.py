@@ -90,6 +90,7 @@ def list_books(request):
 
 
 @api_view(['PUT'])
+@parser_classes([FormParser,MultiPartParser,JSONParser])
 @permission_classes([IsAuthenticated,IsAdminUser])
 @authentication_classes([SessionAuthentication,TokenAuthentication])
 def update_book(request,pk):
@@ -103,12 +104,13 @@ def update_book(request,pk):
     
 
 @api_view(['PUT'])
+@parser_classes([FormParser,MultiPartParser,JSONParser])
 @permission_classes([IsAuthenticated,IsAdminUser])
 @authentication_classes([SessionAuthentication,TokenAuthentication])
 def update_book_details(request,pk):
     book=get_object_or_404(Book,BookID=pk)
-    details=BookDetail(Book=book)
-    serializer=BookDetailSerializer(details,data=request.data)
+    details_instance, created = BookDetail.objects.get_or_create(BookID=book)
+    serializer=BookDetailSerializer(details_instance,data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response({"message":"Information has been updated"})
@@ -117,6 +119,7 @@ def update_book_details(request,pk):
     
 
 @api_view(['POST'])
+@parser_classes([FormParser,MultiPartParser,JSONParser])
 @permission_classes([IsAuthenticated,IsAdminUser])
 @authentication_classes([SessionAuthentication,TokenAuthentication])
 def borrow_book(request):
@@ -125,17 +128,12 @@ def borrow_book(request):
     book=get_object_or_404(Book,BookID=book_id)
     student=get_object_or_404(Student,UserID=user_id)
     date=timezone.now().date()
-    if request.data['return_date']:
-        return_date=request.data['return+date']
-    else:
-        return_date=None
     BorrowedBook.objects.create(
             UserID=student,
             BookID=book,
             BorrowDate=date,
-            ReturnDate=return_date
         )
-    return Response({"message:Book":"Book borrowed"},status=status.HTTP_201_CREATED)
+    return Response({"message:Book":"Book borrowed"},status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -143,14 +141,13 @@ def borrow_book(request):
 @authentication_classes([SessionAuthentication,TokenAuthentication])
 def list_borrow_book(request):
     borrowed_book=BorrowedBook.objects.all()
-    if borrowed_book==None:
-        return Response({"message":"No book has been borrowed yet"})
-    else:
-        serializer=GetBorrowedBookSerializer(borrow_book,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+    print(borrowed_book)
+    serializer=GetBorrowedBookSerializer(borrowed_book,many=True)
+    return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(['PUT'])
+@parser_classes([FormParser,MultiPartParser,JSONParser])
 @permission_classes([IsAuthenticated,IsAdminUser])
 @authentication_classes([SessionAuthentication,TokenAuthentication])
 def return_book(request):
@@ -161,6 +158,7 @@ def return_book(request):
     if serializer.is_valid():
         serializer.save()
         return Response({"message":"Book has been returned by User"},status=status.HTTP_200_OK)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     
 
